@@ -1,0 +1,15 @@
+FROM python:3.6
+
+WORKDIR /code
+
+COPY ./requirements/base.txt requirements/base.txt
+RUN pip install -r requirements/base.txt
+
+ADD . /code
+
+ARG environment=production
+ENV environment=${environment}
+RUN echo "Environment: $environment"
+
+EXPOSE 8080
+ENTRYPOINT ["/code/docker-entrypoint.sh"]

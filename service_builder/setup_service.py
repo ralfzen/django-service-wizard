@@ -5,7 +5,7 @@ from django.core import management
 from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
-                    append_to_file, get_template_content, get_input)
+                    append_to_file, get_template_content, get_input, yes_or_no)
 
 
 def _welcome_msg():
@@ -76,6 +76,15 @@ def _create_app(name_project: str, name_app: str):
             'The app "{}" was successfully created'.format(name_app))
 
 
+def _configure_docker(name_project):
+    filenames = ('Dockerfile', 'docker-compose-dev.yml',
+                 'docker-entrypoint.sh')
+    for filename in filenames:
+        content = get_template_content(os.path.join('docker', filename))
+        content = content.replace('{{ name_project }}', name_project)
+        append_to_file(filename, content)
+
+
 def setup():
     main_dir = os.getcwd()
     _welcome_msg()
@@ -86,4 +95,7 @@ def setup():
     name_app = get_input(
         'Type in the name of your application (e.g.: appointment):')
     _create_app(name_project, name_app)
+    is_answer_yes = yes_or_no('Add Docker support?')
+    if is_answer_yes:
+        _configure_docker(name_project)
     os.chdir(main_dir)

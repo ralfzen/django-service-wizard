@@ -79,7 +79,7 @@ def add_after_variable(filename: str, var: str, text_to_add: str):
 
 
 def append_to_file(filename: str, text_to_append: str):
-    with open(filename, "a") as fp:
+    with open(filename, 'a') as fp:
         fp.write(text_to_append)
 
 
