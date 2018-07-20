@@ -1,11 +1,11 @@
 version: "3.6"
 
 services:
-  sample_service:
+  django_service_wizard:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: sample_service
-    image: sample_service
+    container_name: django_service_wizard
+    image: django_service_wizard
     volumes:
       - .:/code
