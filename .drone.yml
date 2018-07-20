@@ -1,0 +1,9 @@
+pipeline:
+  test:
+    image: python:3.7-alpine
+    commands:
+      - pip install -r requirements/ci.txt
+      - flake8 .
+      - python -m unittest discover .
+    when:
+      event: [pull_request, push, tag]
