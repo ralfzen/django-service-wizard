@@ -2,7 +2,7 @@ import os
 from django.core import management
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
-                    append_to_file, get_template_content, get_input, yes_or_no)
+                    append_to_file, get_template_content, get_input)
 
 
 def _welcome_msg():
@@ -42,7 +42,8 @@ def _configure_project(name_project: str):
                                                 'base_installedapps.tpl'))
     add_after_variable(file_settings, 'INSTALLED_APPS_DJANGO', content)
 
-    content = get_template_content(os.path.join('settings', 'base_appended.tpl'))
+    content = get_template_content(os.path.join('settings',
+                                                'base_appended.tpl'))
     append_to_file(file_settings, content)
 
     file_settings_production = os.path.join(settings_dir, 'production.py')
