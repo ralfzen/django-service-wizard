@@ -1,3 +1,5 @@
+[![Build Status](http://drone.humanitec.io/api/badges/Humanitec/django-service-wizard/status.svg)](http://drone.humanitec.io/Humanitec/django-service-wizard)
+
 # django-service-wizard
 
 A Django (Micro)Service wizard for the Humanitec Platform Walhall. This will
