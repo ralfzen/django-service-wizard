@@ -1,5 +1,6 @@
 import os
 from django.core import management
+from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
                     append_to_file, get_template_content, get_input)
@@ -53,10 +54,16 @@ def _configure_project(name_project: str):
 
 
 def _create_app(name_project: str, name_app: str):
+    main_dir = os.getcwd()
     os.chdir(name_project)
-    management.call_command('startapp', name_app)
-    PrettyPrint.msg_blue(
-        'The app "{}" was successfully created'.format(name_app))
+    try:
+        management.call_command('startapp', name_app)
+    except CommandError:
+        os.chdir(main_dir)
+        raise
+    else:
+        PrettyPrint.msg_blue(
+            'The app "{}" was successfully created'.format(name_app))
 
 
 def setup():
