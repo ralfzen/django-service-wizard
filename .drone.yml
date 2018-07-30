@@ -1,4 +1,8 @@
 pipeline:
+  clone:
+    image: plugins/git
+    depth: 1
+
   test:
     image: python:3.7-alpine
     commands:
