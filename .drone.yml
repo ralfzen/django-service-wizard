@@ -8,6 +8,6 @@ pipeline:
     commands:
       - pip install -r requirements/ci.txt
       - flake8 .
-      - python -m unittest discover .
+      - python -m unittest discover . -v -b
     when:
       event: [pull_request, push, tag]
