@@ -126,8 +126,6 @@ class GetTemplateContextTest(TestCase):
             (os.path.join('settings', 'base_installedapps.tpl'),
              'INSTALLED_APPS'),
             (os.path.join('settings', 'production.tpl'), 'ALLOWED_HOSTS'),
-
-            (os.path.join('html', 'maintenance', 'index.html'), 'Sorry'),
         )
         for filename, content_expected in filename_content_list:
             content = utils.get_template_content(filename)

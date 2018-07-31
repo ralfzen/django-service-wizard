@@ -1,5 +1,8 @@
 import os
+import shutil
+
 from django.core import management
+from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
                     append_to_file, get_template_content, get_input)
@@ -22,6 +25,12 @@ def _create_project(name: str):
 
 
 def _configure_project(name_project: str):
+    # Add requirements
+    requirements_dir = os.path.join(name_project, 'requirements')
+    shutil.copytree(
+        os.path.join('service_builder', 'templates', 'requirements'),
+        requirements_dir)
+
     # Create settings python module
     settings_dir = os.path.join(name_project, name_project, 'settings')
     os.mkdir(settings_dir)
@@ -33,6 +42,10 @@ def _configure_project(name_project: str):
         file_settings,
     )
 
+    file_settings_production = os.path.join(settings_dir, 'production.py')
+    open(file_settings_production, 'a').close()
+
+    # Configure settings
     replace_text(file_settings,
                  'DEBUG = True',
                  "DEBUG = False if os.getenv('DEBUG') == 'False' else True")
@@ -46,17 +59,21 @@ def _configure_project(name_project: str):
                                                 'base_appended.tpl'))
     append_to_file(file_settings, content)
 
-    file_settings_production = os.path.join(settings_dir, 'production.py')
-    open(file_settings_production, 'a').close()
     content = get_template_content(os.path.join('settings', 'production.tpl'))
     append_to_file(file_settings_production, content)
 
 
 def _create_app(name_project: str, name_app: str):
+    main_dir = os.getcwd()
     os.chdir(name_project)
-    management.call_command('startapp', name_app)
-    PrettyPrint.msg_blue(
-        'The app "{}" was successfully created'.format(name_app))
+    try:
+        management.call_command('startapp', name_app)
+    except CommandError:
+        os.chdir(main_dir)
+        raise
+    else:
+        PrettyPrint.msg_blue(
+            'The app "{}" was successfully created'.format(name_app))
 
 
 def setup():
