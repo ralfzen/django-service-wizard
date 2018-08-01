@@ -62,6 +62,13 @@ def _configure_project(name_project: str):
     content = get_template_content(os.path.join('settings', 'production.tpl'))
     append_to_file(file_settings_production, content)
 
+    # Add README
+    file_readme = os.path.join(name_project, 'README.md')
+    open(os.path.join(file_readme), 'a').close()
+    content = get_template_content(os.path.join('readme', 'README.md'))
+    content = content.replace('{{ name_project }}', name_project)
+    append_to_file(file_readme, content)
+
 
 def _create_app(name_project: str, name_app: str):
     main_dir = os.getcwd()
@@ -83,6 +90,11 @@ def _configure_docker(name_project):
         content = get_template_content(os.path.join('docker', filename))
         content = content.replace('{{ name_project }}', name_project)
         append_to_file(filename, content)
+
+    # Add README info
+    file_readme = 'README.md'
+    content = get_template_content(os.path.join('readme', 'docker.md'))
+    append_to_file(file_readme, content)
 
 
 def setup():
