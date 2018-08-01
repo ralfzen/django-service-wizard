@@ -62,6 +62,29 @@ def _configure_project(name_project: str):
     content = get_template_content(os.path.join('settings', 'production.tpl'))
     append_to_file(file_settings_production, content)
 
+    # Configure databases
+    replace_text(
+        file_settings,
+        "'ENGINE': 'django.db.backends.sqlite3'",
+        "'ENGINE': 'django.db.backends.{}'.format(os.environ['DATABASE_ENGINE'])"  # noqa
+    )
+    replace_text(
+        file_settings,
+        "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
+        """\
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.environ['DATABASE_PORT'],\
+        """)
+
+    # Modify manage.py default Django settings
+    file_manage_py = os.path.join(name_project, 'manage.py')
+    replace_text(file_manage_py,
+                 '{}.settings'.format(name_project),
+                 '{}.settings.base'.format(name_project))
+
     # Add README
     file_readme = os.path.join(name_project, 'README.md')
     open(os.path.join(file_readme), 'a').close()
@@ -81,6 +104,10 @@ def _create_app(name_project: str, name_app: str):
     else:
         PrettyPrint.msg_blue(
             'The app "{}" was successfully created'.format(name_app))
+
+    # Add new app to settings
+    file_settings = os.path.join(name_project, 'settings', 'base.py')
+    replace_text(file_settings, '{{ name_app }}', name_app)
 
 
 def _configure_docker(name_project):

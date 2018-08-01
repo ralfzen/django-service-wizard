@@ -3,8 +3,6 @@
 # Rest Framework
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS':
-        'documents-service.pagination.DefaultCursorPagination',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -19,6 +17,6 @@ REST_FRAMEWORK = {
 
 # JWT Configuration
 
-JWT_AUTH_DISABLED=True
+JWT_AUTH_DISABLED = True
 JWT_ALLOWED_ISSUER = 'activityapi'
 JWT_PUBLIC_KEY_RSA_ACTIVITYAPI = os.getenv('JWT_PUBLIC_KEY_RSA_ACTIVITYAPI')
