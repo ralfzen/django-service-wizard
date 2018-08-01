@@ -5,15 +5,14 @@
 A Django (Micro)Service wizard for the Humanitec Platform Walhall. This will
 help you to setup your a project from scratch.
 
+The Django version installed is specified in `requirements/base.txt`. The
+project will be created for Python version 3
+(see `service_builder/templates/docker/Dockerfile` for more details).
+
+
 ## Set up a new MicroService
 
-Build the docker image:
-
-```bash
-docker-compose -f docker-compose.yml build
-```
-
-Then run the created image:
+Just run the command:
 
 ```bash
 docker-compose -f docker-compose.yml run --rm django_service_wizard
