@@ -5,7 +5,7 @@ from django.core import management
 from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
-                    append_to_file, get_template_content, get_input)
+                    append_to_file, get_template_content, get_input, yes_or_no)
 
 
 def _welcome_msg():
@@ -62,6 +62,36 @@ def _configure_project(name_project: str):
     content = get_template_content(os.path.join('settings', 'production.tpl'))
     append_to_file(file_settings_production, content)
 
+    # Configure databases
+    replace_text(
+        file_settings,
+        "'ENGINE': 'django.db.backends.sqlite3'",
+        "'ENGINE': 'django.db.backends.{}'.format(os.environ['DATABASE_ENGINE'])"  # noqa
+    )
+    replace_text(
+        file_settings,
+        "        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),",
+        """\
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.environ['DATABASE_PORT'],\
+        """)
+
+    # Modify manage.py default Django settings
+    file_manage_py = os.path.join(name_project, 'manage.py')
+    replace_text(file_manage_py,
+                 '{}.settings'.format(name_project),
+                 '{}.settings.base'.format(name_project))
+
+    # Add README
+    file_readme = os.path.join(name_project, 'README.md')
+    open(os.path.join(file_readme), 'a').close()
+    content = get_template_content(os.path.join('readme', 'README.md'))
+    content = content.replace('{{ name_project }}', name_project)
+    append_to_file(file_readme, content)
+
 
 def _create_app(name_project: str, name_app: str):
     main_dir = os.getcwd()
@@ -75,6 +105,24 @@ def _create_app(name_project: str, name_app: str):
         PrettyPrint.msg_blue(
             'The app "{}" was successfully created'.format(name_app))
 
+    # Add new app to settings
+    file_settings = os.path.join(name_project, 'settings', 'base.py')
+    replace_text(file_settings, '{{ name_app }}', name_app)
+
+
+def _configure_docker(name_project):
+    filenames = ('Dockerfile', 'docker-compose-dev.yml',
+                 'docker-entrypoint.sh')
+    for filename in filenames:
+        content = get_template_content(os.path.join('docker', filename))
+        content = content.replace('{{ name_project }}', name_project)
+        append_to_file(filename, content)
+
+    # Add README info
+    file_readme = 'README.md'
+    content = get_template_content(os.path.join('readme', 'docker.md'))
+    append_to_file(file_readme, content)
+
 
 def setup():
     main_dir = os.getcwd()
@@ -86,4 +134,7 @@ def setup():
     name_app = get_input(
         'Type in the name of your application (e.g.: appointment):')
     _create_app(name_project, name_app)
+    is_answer_yes = yes_or_no('Add Docker support?')
+    if is_answer_yes:
+        _configure_docker(name_project)
     os.chdir(main_dir)

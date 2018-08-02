@@ -3,16 +3,14 @@ INSTALLED_APPS_THIRD_PARTIES = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
-    'django_boto',
 
-    # health check
-    'health_check',  # required
-    'health_check.db',  # stock Django health checkers
+    # Health check
+    'health_check',
+    'health_check.db',
 ]
 
 INSTALLED_APPS_LOCAL = [
-    'api',
-    'documents',
+    '{{ name_app }}',
 ]
 
 INSTALLED_APPS = INSTALLED_APPS_DJANGO + INSTALLED_APPS_THIRD_PARTIES + \
