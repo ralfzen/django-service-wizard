@@ -10,10 +10,13 @@ from .utils import (PrettyPrint, replace_text, add_after_variable,
 
 def _welcome_msg():
     PrettyPrint.msg_blue('Welcome to Humanitec MicroService wizard!')
-    PrettyPrint.print_green("                  .' '.            __")
-    PrettyPrint.print_green("         .        .   .           (__\_")
-    PrettyPrint.print_green("          .         .         . -{{_(|8)")
-    PrettyPrint.print_green("            ' .  . ' ' .  . '     (__/\`\n")
+    PrettyPrint.print_green("""
+  /\  /\_   _ _ __ ___   __ _ _ __ (_) |_ ___  ___
+ / /_/ / | | | '_ ` _ \ / _` | '_ \| | __/ _ \/ __|
+/ __  /| |_| | | | | | | (_| | | | | | ||  __/ (__
+\/ /_/  \__,_|_| |_| |_|\__,_|_| |_|_|\__\___|\___|
+
+    """)
     PrettyPrint.msg_blue('We will help you to set up a MicroService :)')
 
 
