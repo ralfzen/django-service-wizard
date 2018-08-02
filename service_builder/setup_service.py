@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from django.core import management
 from django.core.management.base import CommandError
@@ -26,10 +25,11 @@ def _create_project(name: str):
 
 def _configure_project(name_project: str):
     # Add requirements
-    requirements_dir = os.path.join(name_project, 'requirements')
-    shutil.copytree(
-        os.path.join('service_builder', 'templates', 'requirements'),
-        requirements_dir)
+    os.mkdir(os.path.join(name_project, 'requirements'))
+    file_requirements = os.path.join('requirements', 'base.txt')
+    content = get_template_content(file_requirements)
+    open(os.path.join(name_project, file_requirements), 'a').close()
+    append_to_file(os.path.join(name_project, file_requirements), content)
 
     # Create settings python module
     settings_dir = os.path.join(name_project, name_project, 'settings')
@@ -123,6 +123,40 @@ def _configure_docker(name_project):
     content = get_template_content(os.path.join('readme', 'docker.md'))
     append_to_file(file_readme, content)
 
+    PrettyPrint.msg_blue('Docker support was successfully added')
+
+
+def _configure_drone_ci():
+    file_requirements = os.path.join('requirements', 'ci.txt')
+    content = get_template_content(file_requirements)
+    open(file_requirements, 'a').close()
+    append_to_file(file_requirements, content)
+
+    file_flake8 = '.flake8'
+    content = get_template_content(os.path.join('drone-ci', file_flake8))
+    open(file_flake8, 'a').close()
+    append_to_file(file_flake8, content)
+
+    file_coverage = '.coveragerc'
+    content = get_template_content(os.path.join('drone-ci', file_coverage))
+    open(file_coverage, 'a').close()
+    append_to_file(file_coverage, content)
+
+    file_drone = '.drone.yml'
+    content = get_template_content(os.path.join('drone-ci', file_drone))
+    open(file_drone, 'a').close()
+    append_to_file(file_drone, content)
+
+    file_tcp = 'tcp-port-wait.sh'
+    content = get_template_content(os.path.join('drone-ci', file_tcp))
+    open(file_tcp, 'a').close()
+    append_to_file(file_tcp, content)
+    os.chmod(file_tcp, 0o755)
+
+    PrettyPrint.msg_blue('Drone CI support was successfully added. Make sure '
+                         'to configure the needed permissions in the Drone CI '
+                         'web administration panel')
+
 
 def setup():
     main_dir = os.getcwd()
@@ -134,7 +168,14 @@ def setup():
     name_app = get_input(
         'Type in the name of your application (e.g.: appointment):')
     _create_app(name_project, name_app)
+
     is_answer_yes = yes_or_no('Add Docker support?')
     if is_answer_yes:
         _configure_docker(name_project)
+
+    is_answer_yes = yes_or_no(
+        'Add Drone CI test support?')
+    if is_answer_yes:
+        _configure_drone_ci()
+
     os.chdir(main_dir)
