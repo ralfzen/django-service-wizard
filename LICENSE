@@ -1,3 +1,46 @@
+Preamble
+Humanitec GmbH, Berlin (“Humanitec”), intends for the Microservices designed to be running on the Walhall platform to have a high accessibility in terms of use and modification options. Therefore, Humanitec implemented an open source licensing system for Microservices developed for and running on Walhall. 
+Should a Microservice’s Initiator decide on making their Microservice subject to the Humanitec Affero GPL or should they decide to fork an existing Microservice subject to Humanitec Affero GPL, the following license terms shall apply:
+
+
+DEFINITIONS
+In this Humanitec Affero GPL, unless the context otherwise requires, the following expressions shall have the following meanings:
+“Core API” means a Microservice that is proprietary and owned by Humanitec and is responsible for authentication, routing and security within all internal interactions of the platform. The Core API is the instance of truth for all settlement of payments that depend on the API call volume towards a certain Microservice;
+“Developer” means any person that is either an Initiator or that uploads a Fork of an existing Microservice to the Walhall Marketplace;
+“Fork” means a version of an existing Microservice that is further developed by a party other than the original developer but based on the original developer’s source code;
+“Forking” means the act of creating a Fork;
+“Initiator” means any person developing and uploading a first version of a Microservice to the Walhall Marketplace;
+“Humanitec Affero GPL” means the Affero General Public License as modified by Humanitec for use on the Platform;
+“Microservice” means an autonomously functioning piece of code that can run on its own on a separate machine, is clearly differentiated in terms of its APIs and can but does not need to have a frontend and a backend component. Microservices must always connect to the Core API;
+“Platform” or “Walhall” means the platform operated by Humanitec including but not limited to the Core API both as further described as a collection of services that combine to provide both data and application logic that can be rendered in a customized front end display template. The details can be found at [xxx] as may be changed from time to time;
+“Walhall Marketplace” means the Humanitec’s app store where Platform users can license Microservices under the terms and conditions published in the Walhall Marketplace for each respective Microservice.
+Headings shall be ignored in interpretation.
+Words importing gender shall include all genders; words denoting the singular shall include the plural; words denoting persons include incorporated and unincorporated bodies, and in each case vice versa.
+Reference to any regulation, directive, statute, statutory provision or statutory instrument includes a reference to that regulation, directive, statute, statutory provision or statutory instrument together with all rules and regulations made under them and as from time to time amended, consolidated or re-enacted.
+APPLICATION OF AFFERO GPL
+The GNU Affero GPL as attached in Schedule 1 hereto shall apply to any Microservice the Initiator designated so as modified by this Humanitec Affero GPL.
+If an Initiator designated a Microservice as being subject to the Humanitec Affero GPL, a Developer cannot change such designation when uploading a Microservice’s Fork to the Walhall Plattform.
+In case of a conflict between the Humanitec Affero GPL and Schedule 1, the Humanitec Affero GPL shall prevail.
+Conveying Modified Source Versions
+Clause 5 of Schedule 1 notwithstanding, a Fork may only be conveyed on the Platform.
+Modification of Schedule 1
+Schedule shall be modified as follows:
+Clause 14 shall be replaced by the following text:
+“Statutory German warranty shall apply to the Program. Warranty period is one (1) year commencing upon delivery of the Program to the Licensee.” 
+Clause 15 shall be replaced by the following text:
+“Developer shall only be liable for
+any loss or damages caused by willful intent (Vorsatz) or gross negligence (grobe Fahrlässigkeit);
+in cases of damages that result from injury to life, body or health;
+such loss or damage is caused by the infringement of a fundamental contractual duty by Initiator, which is indispensable for the duly execution of the contract and thereby jeopardizes the achievement of the contract purpose;
+in case of liability provided by law, as under the Product Liability Act (Produkthaftungsgesetz);
+in cases of liability due to a guarantee.
+In cases of Clause 15.1.3 such loss or damage is limited to the foreseeable damage at the time of the infringement which is the case if such loss occurs as typical effect of such damaging event.”
+APPLICABLE LAW
+German law shall apply to the Humanitec Affero GPL.
+
+                    
+                    
+                    
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 
