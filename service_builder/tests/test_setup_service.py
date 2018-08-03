@@ -22,10 +22,11 @@ class SetupTest(TestCase):
         shutil.rmtree(self.name_project, ignore_errors=True)
 
     @patch('service_builder.setup_service._configure_docker')
+    @patch('service_builder.setup_service._configure_drone_ci')
     @patch('service_builder.setup_service.yes_or_no')
     @patch('service_builder.setup_service.get_input')
     def test_setup_successful(self, mock_get_input, mock_yn,
-                              mock_configure_docker):
+                              mock_configure_docker, mock_configure_drone_ci):
         mock_get_input.side_effect = [self.name_project, self.name_application]
         mock_yn.return_value = False
         setup()
@@ -34,7 +35,20 @@ class SetupTest(TestCase):
             os.path.isdir(
                 os.path.join(self.name_project, self.name_application)
             ))
+        file_base = os.path.join(self.name_project, 'requirements', 'base.txt')
+        self.assertTrue(os.path.exists(file_base))
+        with open(file_base, 'r') as fp:
+            content = fp.read()
+        self.assertEqual(content, """\
+Django==2.0.7
+django-filter==2.0.0
+django-health-check==3.6.1
+git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.4.0#egg=django-oauth-toolkit-jwt
+djangorestframework==3.8.2
+psycopg2-binary>=2.7,<2.8
+""")
         self.assertFalse(mock_configure_docker.called)
+        self.assertFalse(mock_configure_drone_ci.called)
 
     @patch('service_builder.setup_service._configure_docker')
     @patch('service_builder.setup_service.yes_or_no')
