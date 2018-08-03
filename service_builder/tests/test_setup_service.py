@@ -35,8 +35,18 @@ class SetupTest(TestCase):
             os.path.isdir(
                 os.path.join(self.name_project, self.name_application)
             ))
-        self.assertTrue(os.path.exists(
-            os.path.join(self.name_project, 'requirements', 'base.txt')))
+        file_base = os.path.join(self.name_project, 'requirements', 'base.txt')
+        self.assertTrue(os.path.exists(file_base))
+        with open(file_base, 'r') as fp:
+            content = fp.read()
+        self.assertEqual(content, """\
+Django==2.0.7
+django-filter==2.0.0
+django-health-check==3.6.1
+git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.4.0#egg=django-oauth-toolkit-jwt
+djangorestframework==3.8.2
+psycopg2-binary>=2.7,<2.8
+""")
         self.assertFalse(mock_configure_docker.called)
         self.assertFalse(mock_configure_drone_ci.called)
 
