@@ -28,7 +28,6 @@ def _configure_project(name_project: str):
     os.mkdir(os.path.join(name_project, 'requirements'))
     file_requirements = os.path.join('requirements', 'base.txt')
     content = get_template_content(file_requirements)
-    open(os.path.join(name_project, file_requirements), 'a').close()
     append_to_file(os.path.join(name_project, file_requirements), content)
 
     # Create settings python module
@@ -87,7 +86,6 @@ def _configure_project(name_project: str):
 
     # Add README
     file_readme = os.path.join(name_project, 'README.md')
-    open(os.path.join(file_readme), 'a').close()
     content = get_template_content(os.path.join('readme', 'README.md'))
     content = content.replace('{{ name_project }}', name_project)
     append_to_file(file_readme, content)
