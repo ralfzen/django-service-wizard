@@ -127,31 +127,34 @@ def _configure_docker(name_project):
 
 
 def _configure_drone_ci():
-    file_requirements = os.path.join('requirements', 'ci.txt')
-    content = get_template_content(file_requirements)
-    open(file_requirements, 'a').close()
-    append_to_file(file_requirements, content)
+    files_to_copy = [
+        {
+            'source': os.path.join('requirements', 'ci.txt'),
+            'destination': os.path.join('requirements', 'ci.txt')
+        },
+        {
+            'source': os.path.join('drone-ci', '.flake8'),
+            'destination': os.path.join('.flake8')
+        },
+        {
+            'source': os.path.join('drone-ci', '.coveragerc'),
+            'destination': os.path.join('.coveragerc')
+        },
+        {
+            'source': os.path.join('drone-ci', '.drone.yml'),
+            'destination': os.path.join('.drone.yml')
+        },
+        {
+            'source': os.path.join('drone-ci', 'tcp-port-wait.sh'),
+            'destination': os.path.join('tcp-port-wait.sh')
+        },
+    ]
 
-    file_flake8 = '.flake8'
-    content = get_template_content(os.path.join('drone-ci', file_flake8))
-    open(file_flake8, 'a').close()
-    append_to_file(file_flake8, content)
-
-    file_coverage = '.coveragerc'
-    content = get_template_content(os.path.join('drone-ci', file_coverage))
-    open(file_coverage, 'a').close()
-    append_to_file(file_coverage, content)
-
-    file_drone = '.drone.yml'
-    content = get_template_content(os.path.join('drone-ci', file_drone))
-    open(file_drone, 'a').close()
-    append_to_file(file_drone, content)
-
-    file_tcp = 'tcp-port-wait.sh'
-    content = get_template_content(os.path.join('drone-ci', file_tcp))
-    open(file_tcp, 'a').close()
-    append_to_file(file_tcp, content)
-    os.chmod(file_tcp, 0o755)
+    for aFile in files_to_copy:
+        append_to_file(
+            filename=aFile['destination'],
+            text_to_append=get_template_content(aFile['source']),
+        )
 
     PrettyPrint.msg_blue('Drone CI support was successfully added. Make sure '
                          'to configure the needed permissions in the Drone CI '
