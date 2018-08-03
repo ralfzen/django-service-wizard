@@ -14,7 +14,7 @@ pipeline:
       - pip install -r requirements/ci.txt
       - cat .flake8
       - flake8 .
-      - ./tcp-port-wait.sh postgres 5432
+      - bash tcp-port-wait.sh $${DATABASE_HOST} $${DATABASE_PORT}
       - coverage run --source='.' manage.py test -v 2
       - coverage report -m
     environment:
