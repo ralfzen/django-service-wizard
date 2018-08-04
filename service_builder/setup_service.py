@@ -182,4 +182,7 @@ def setup():
     if is_answer_yes:
         _configure_drone_ci()
 
+    PrettyPrint.msg_blue(
+        'Great! Now you can find your new project inside the current\'s '
+        'wizard folder with name "{}"'.format(name_project))
     os.chdir(main_dir)

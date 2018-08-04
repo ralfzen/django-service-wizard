@@ -21,12 +21,14 @@ class SetupTest(TestCase):
         os.chdir(self.main_dir)
         shutil.rmtree(self.name_project, ignore_errors=True)
 
+    @patch('service_builder.setup_service.PrettyPrint')
     @patch('service_builder.setup_service._configure_docker')
     @patch('service_builder.setup_service._configure_drone_ci')
     @patch('service_builder.setup_service.yes_or_no')
     @patch('service_builder.setup_service.get_input')
     def test_setup_successful(self, mock_get_input, mock_yn,
-                              mock_configure_docker, mock_configure_drone_ci):
+                              mock_configure_docker, mock_configure_drone_ci,
+                              mock_prettyprint):
         mock_get_input.side_effect = [self.name_project, self.name_application]
         mock_yn.return_value = False
         setup()
@@ -49,6 +51,9 @@ psycopg2-binary>=2.7,<2.8
 """)
         self.assertFalse(mock_configure_docker.called)
         self.assertFalse(mock_configure_drone_ci.called)
+        mock_prettyprint.msg_blue.assert_called_with(
+            'Great! Now you can find your new project inside the current\'s '
+            'wizard folder with name "{}"'.format(self.name_project))
 
     @patch('service_builder.setup_service._configure_docker')
     @patch('service_builder.setup_service.yes_or_no')
