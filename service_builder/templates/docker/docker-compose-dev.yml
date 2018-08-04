@@ -9,7 +9,7 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
-    image: postgres:9.6
+    image: postgres:10.4
     environment:
       POSTGRES_DB: {{ name_project }}
       POSTGRES_USER: root
