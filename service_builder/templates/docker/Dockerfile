@@ -12,4 +12,4 @@ ENV environment=${environment}
 RUN echo "Environment: $environment"
 
 EXPOSE 8080
-ENTRYPOINT ["/code/docker-entrypoint.sh"]
+ENTRYPOINT ["bash", "/code/docker-entrypoint.sh"]
