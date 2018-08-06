@@ -8,7 +8,6 @@ pipeline:
     commands:
       - pip install -r requirements/ci.txt
       - flake8 .
-      - python -m unittest discover . -v -b
-      - py.test service_builder/tests/bdd/tests.py
+      - py.test service_builder/tests
     when:
       event: [pull_request, push, tag]
