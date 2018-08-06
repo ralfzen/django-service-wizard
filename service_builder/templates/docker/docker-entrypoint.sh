@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo $(date -u) "- Environment: $environment"
+bash tcp-port-wait.sh $DATABASE_HOST $DATABASE_PORT
 
 if [ "$environment" == "localhost" ]; then
     echo $(date -u) "- Migrating"
