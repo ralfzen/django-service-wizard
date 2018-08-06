@@ -29,11 +29,5 @@ docker-compose -f docker-compose.yml build
 Run the tests:
 
 ```bash
-docker-compose -f docker-compose.yml run --entrypoint 'python -m unittest discover . -v -b' --rm django_service_wizard
-```
-
-To run the tests with pdb support (it will show stdout):
-
-```bash
-docker-compose -f docker-compose.yml run --entrypoint 'python -m unittest discover . -v' --rm django_service_wizard
+docker-compose -f docker-compose.yml run --entrypoint 'py.test service_builder/tests' --rm django_service_wizard
 ```
