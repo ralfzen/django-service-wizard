@@ -1,6 +1,4 @@
 #!/bin/bash
-apt update
-apt install -y netcat
 set -e
 
 if [ -z "$1" -o -z "$2" ]
