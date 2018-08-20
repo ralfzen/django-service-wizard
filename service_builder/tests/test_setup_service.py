@@ -37,6 +37,13 @@ class SetupTest(TestCase):
             os.path.isdir(
                 os.path.join(self.name_project, self.name_application)
             ))
+        file_gitignore = os.path.join(self.name_project, '.gitignore')
+        self.assertTrue(os.path.exists(file_gitignore))
+        with open(file_gitignore, 'r') as fp:
+            content = fp.read()
+        self.assertEqual(content, """\
+*.pyc
+""")
         file_base = os.path.join(self.name_project, 'requirements', 'base.txt')
         self.assertTrue(os.path.exists(file_base))
         with open(file_base, 'r') as fp:

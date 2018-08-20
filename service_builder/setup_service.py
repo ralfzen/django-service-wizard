@@ -27,6 +27,10 @@ def _create_project(name: str):
 
 
 def _configure_project(name_project: str):
+    # Add .gitignore
+    content = get_template_content(os.path.join('gitignore', '.gitignore'))
+    append_to_file(os.path.join(name_project, '.gitignore'), content)
+
     # Add requirements
     os.mkdir(os.path.join(name_project, 'requirements'))
     file_requirements = os.path.join('requirements', 'base.txt')
