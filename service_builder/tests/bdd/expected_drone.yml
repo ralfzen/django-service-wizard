@@ -4,6 +4,7 @@ services:
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=db
 
 pipeline:
   clone:
@@ -17,6 +18,7 @@ pipeline:
       - bash tcp-port-wait.sh $${DATABASE_HOST} $${DATABASE_PORT}
       - coverage run --source='.' manage.py test -v 2
       - coverage report -m
+      - python manage.py makemigrations --check --dry-run
     environment:
       - DATABASE_ENGINE=postgresql
       - DATABASE_NAME=db
