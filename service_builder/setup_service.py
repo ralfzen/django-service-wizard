@@ -33,9 +33,13 @@ def _configure_project(name_project: str):
 
     # Add requirements
     os.mkdir(os.path.join(name_project, 'requirements'))
-    file_requirements = os.path.join('requirements', 'base.txt')
-    content = get_template_content(file_requirements)
-    append_to_file(os.path.join(name_project, file_requirements), content)
+    files_requirements = (
+        os.path.join('requirements', 'base.txt'),
+        os.path.join('requirements', 'production.txt'),
+    )
+    for file_requirements in files_requirements:
+        content = get_template_content(file_requirements)
+        append_to_file(os.path.join(name_project, file_requirements), content)
 
     # Create settings python module
     settings_dir = os.path.join(name_project, name_project, 'settings')
@@ -85,6 +89,12 @@ def _configure_project(name_project: str):
         'PORT': os.environ['DATABASE_PORT'],\
         """)
 
+    # Modify wsgi.py
+    file_wsgi = os.path.join(name_project, name_project, 'wsgi.py')
+    replace_text(file_wsgi,
+                 '{}.settings'.format(name_project),
+                 '{}.settings.production'.format(name_project))
+
     # Modify manage.py default Django settings
     file_manage_py = os.path.join(name_project, 'manage.py')
     replace_text(file_manage_py,
@@ -115,13 +125,18 @@ def _create_app(name_project: str, name_app: str):
     replace_text(file_settings, '{{ name_app }}', name_app)
 
 
-def _configure_docker(name_project):
-    filenames = ('Dockerfile', 'docker-compose-dev.yml',
-                 'docker-entrypoint.sh')
+def _configure_docker(name_project: str):
+    filenames = (
+        os.path.join('docker', 'Dockerfile'),
+        os.path.join('docker', 'docker-compose-dev.yml'),
+        os.path.join('docker', 'docker-entrypoint.sh'),
+        os.path.join('docker', 'run-standalone-dev.sh'),
+        os.path.join('utils', 'tcp-port-wait.sh'),
+    )
     for filename in filenames:
-        content = get_template_content(os.path.join('docker', filename))
+        content = get_template_content(filename)
         content = content.replace('{{ name_project }}', name_project)
-        append_to_file(filename, content)
+        append_to_file(os.path.basename(filename), content, recreate=True)
 
     # Add README info
     file_readme = 'README.md'
@@ -150,15 +165,16 @@ def _configure_drone_ci():
             'destination': os.path.join('.drone.yml')
         },
         {
-            'source': os.path.join('drone-ci', 'tcp-port-wait.sh'),
+            'source': os.path.join('utils', 'tcp-port-wait.sh'),
             'destination': os.path.join('tcp-port-wait.sh')
         },
     ]
 
-    for aFile in files_to_copy:
+    for file in files_to_copy:
         append_to_file(
-            filename=aFile['destination'],
-            text_to_append=get_template_content(aFile['source']),
+            filename=file['destination'],
+            text_to_append=get_template_content(file['source']),
+            recreate=True,
         )
 
     PrettyPrint.msg_blue('Drone CI support was successfully added. Make sure '

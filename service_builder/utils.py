@@ -78,7 +78,10 @@ def add_after_variable(filename: str, var: str, text_to_add: str):
             print(line, end='')
 
 
-def append_to_file(filename: str, text_to_append: str):
+def append_to_file(filename: str, text_to_append: str, recreate: bool = False):
+    if recreate and os.path.exists(filename):
+        os.remove(filename)
+
     with open(filename, 'a') as fp:
         fp.write(text_to_append)
 

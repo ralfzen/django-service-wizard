@@ -32,11 +32,15 @@ class SetupTest(TestCase):
         mock_get_input.side_effect = [self.name_project, self.name_application]
         mock_yn.return_value = False
         setup()
+
+        # Check project and app are there
         self.assertTrue(os.path.isdir(self.name_project))
         self.assertTrue(
             os.path.isdir(
                 os.path.join(self.name_project, self.name_application)
             ))
+
+        # Gitignore
         file_gitignore = os.path.join(self.name_project, '.gitignore')
         self.assertTrue(os.path.exists(file_gitignore))
         with open(file_gitignore, 'r') as fp:
@@ -44,6 +48,17 @@ class SetupTest(TestCase):
         self.assertEqual(content, """\
 *.pyc
 """)
+
+        # wsgi.py
+        file_wsgi = os.path.join(self.name_project, self.name_project,
+                                 'wsgi.py')
+        with open(file_wsgi, 'r') as file_tpl:
+            content = file_tpl.read()
+            self.assertIn(
+                '{}.settings.production'.format(self.name_project),
+                content)
+
+        # Requirements
         file_base = os.path.join(self.name_project, 'requirements', 'base.txt')
         self.assertTrue(os.path.exists(file_base))
         with open(file_base, 'r') as fp:
@@ -55,6 +70,17 @@ django-health-check==3.6.1
 git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.4.0#egg=django-oauth-toolkit-jwt
 djangorestframework==3.8.2
 psycopg2-binary==2.7.5
+""")
+        file_production = os.path.join(self.name_project, 'requirements',
+                                       'production.txt')
+        self.assertTrue(os.path.exists(file_production))
+        with open(file_production, 'r') as fp:
+            content = fp.read()
+        self.assertEqual(content, """\
+-r base.txt
+
+django-cors-headers==2.4.0
+gunicorn==19.9.0
 """)
         self.assertFalse(mock_configure_docker.called)
         self.assertFalse(mock_configure_drone_ci.called)
@@ -109,7 +135,9 @@ class SetupDockerTest(TestCase):
             ('Dockerfile', 'ENTRYPOINT'),
             ('docker-compose-dev.yml', 'container_name'),
             ('docker-entrypoint.sh',
-             'gunicorn -b 0.0.0.0:8080 {}.wsgi'.format(self.name_project)),
+             'gunicorn -b 0.0.0.0:80 {}.wsgi'.format(self.name_project)),
+            ('run-standalone-dev.sh', 'gunicorn -b 0.0.0.0:8080 --reload'),
+            ('tcp-port-wait.sh', 'tcp-port-wait')
         )
         for filename, content_expected in filename_content_list:
             with open(filename, 'r') as file_tpl:
