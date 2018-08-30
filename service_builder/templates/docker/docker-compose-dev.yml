@@ -24,8 +24,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - environment=localhost
+    entrypoint: bash /code/run-standalone-dev.sh
     container_name: {{ name_project }}
     image: {{ name_project }}
     volumes:
@@ -35,6 +34,8 @@ services:
     depends_on:
       - postgres_{{ name_project }}
     environment:
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      CORS_ORIGIN_WHITELIST: localhost,127.0.0.1
       DATABASE_ENGINE: "postgresql"
       DATABASE_NAME: "{{ name_project }}"
       DATABASE_USER: "root"
