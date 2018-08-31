@@ -182,6 +182,16 @@ def _configure_drone_ci():
                          'web administration panel')
 
 
+def _configure_docker_registry(name_project: str, registry_domain: str,
+                               registry_folder: str):
+    registry_url = os.path.join(registry_domain, registry_folder, name_project)
+    filename = os.path.join('drone-ci', '.drone-appendix.yml')
+    content = get_template_content(filename)
+    content = content.replace('{{ registry_domain }}', registry_domain)
+    content = content.replace('{{ registry_url }}', registry_url)
+    append_to_file(filename='.drone.yml', text_to_append=content)
+
+
 def setup():
     main_dir = os.getcwd()
     _welcome_msg()
@@ -193,14 +203,24 @@ def setup():
         'Type in the name of your application (e.g.: appointment):')
     _create_app(name_project, name_app)
 
-    is_answer_yes = yes_or_no('Add Docker support?')
-    if is_answer_yes:
+    is_answer_yes_docker = yes_or_no('Add Docker support?')
+    if is_answer_yes_docker:
         _configure_docker(name_project)
 
-    is_answer_yes = yes_or_no(
-        'Add Drone CI test support?')
-    if is_answer_yes:
+    is_answer_yes_drone = yes_or_no('Add Drone CI test support?')
+    if is_answer_yes_drone:
         _configure_drone_ci()
+
+    if is_answer_yes_docker and is_answer_yes_drone:
+        is_answer_yes = yes_or_no(
+            'Add Docker registry support to Drone?')
+        if is_answer_yes:
+            registry_domain = get_input(
+                'Type in the domain of the registry (e.g.: registry.tola.io):')
+            registry_folder = get_input(
+                'Type the folder of the registry (e.g.: toladata):')
+            _configure_docker_registry(name_project, registry_domain,
+                                       registry_folder)
 
     PrettyPrint.msg_blue(
         'Great! Now you can find your new project inside the current\'s '
