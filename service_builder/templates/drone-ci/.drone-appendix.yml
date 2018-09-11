@@ -1,0 +1,11 @@
+  build-docker-image-tag:
+    image: plugins/docker
+    insecure: true
+    registry: {{ registry_domain }}
+    repo: {{ registry_url }}
+    file: Dockerfile
+    auto_tag: true
+    secrets: [DOCKER_USERNAME, DOCKER_PASSWORD]
+    when:
+      event: [tag]
+      status: [success]

@@ -5,7 +5,8 @@ from unittest.mock import patch
 
 from django.core.management.base import CommandError
 
-from ..setup_service import setup, _configure_docker
+from ..setup_service import (
+    setup, _configure_docker, _configure_docker_registry)
 
 
 class SetupTest(TestCase):
@@ -24,10 +25,12 @@ class SetupTest(TestCase):
     @patch('service_builder.setup_service.PrettyPrint')
     @patch('service_builder.setup_service._configure_docker')
     @patch('service_builder.setup_service._configure_drone_ci')
+    @patch('service_builder.setup_service._configure_docker_registry')
     @patch('service_builder.setup_service.yes_or_no')
     @patch('service_builder.setup_service.get_input')
     def test_setup_successful(self, mock_get_input, mock_yn,
-                              mock_configure_docker, mock_configure_drone_ci,
+                              mock_configure_docker_registry,
+                              mock_configure_drone_ci, mock_configure_docker,
                               mock_prettyprint):
         mock_get_input.side_effect = [self.name_project, self.name_application]
         mock_yn.return_value = False
@@ -84,6 +87,7 @@ gunicorn==19.9.0
 """)
         self.assertFalse(mock_configure_docker.called)
         self.assertFalse(mock_configure_drone_ci.called)
+        self.assertFalse(mock_configure_docker_registry.called)
         mock_prettyprint.msg_blue.assert_called_with(
             'Great! Now you can find your new project inside the current\'s '
             'wizard folder with name "{}"'.format(self.name_project))
@@ -94,14 +98,28 @@ gunicorn==19.9.0
     def test_setup_successful_w_docker(self, mock_get_input, mock_yn,
                                        mock_configure_docker):
         mock_get_input.side_effect = [self.name_project, self.name_application]
-        mock_yn.return_value = True
+        mock_yn.side_effect = [True, False, False]
         setup()
-        self.assertTrue(os.path.isdir(self.name_project))
-        self.assertTrue(
-            os.path.isdir(
-                os.path.join(self.name_project, self.name_application)
-            ))
         self.assertTrue(mock_configure_docker.called)
+
+    @patch('service_builder.setup_service._configure_docker_registry')
+    @patch('service_builder.setup_service._configure_drone_ci')
+    @patch('service_builder.setup_service._configure_docker')
+    @patch('service_builder.setup_service.yes_or_no')
+    @patch('service_builder.setup_service.get_input')
+    def test_setup_successful_w_docker_registry(
+            self, mock_get_input, mock_yn, _mock_configure_docker,
+            mock_configure_drone_ci, mock_configure_docker_registry):
+        mock_get_input.side_effect = [
+            self.name_project,
+            self.name_application,
+            'registry.tola.io',
+            'toladata',
+        ]
+        mock_yn.side_effect = [True, True, True]
+        setup()
+        self.assertTrue(mock_configure_drone_ci.called)
+        self.assertTrue(mock_configure_docker_registry.called)
 
     @patch('service_builder.setup_service.get_input')
     def test_setup_wrong_project_name(self, mock_get_input):
@@ -144,3 +162,34 @@ class SetupDockerTest(TestCase):
                 content = file_tpl.read()
                 self.assertIn(content_expected, content)
                 self.assertNotIn('{{ name_project }}', content)
+
+
+class SetupDockerRegistryTest(TestCase):
+    def setUp(self):
+        self.main_dir = os.getcwd()
+        self.name_project = 'test_service'
+        shutil.rmtree(self.name_project, ignore_errors=True)
+        os.mkdir(self.name_project)
+        os.chdir(self.name_project)
+
+    def tearDown(self):
+        os.chdir(self.main_dir)
+        shutil.rmtree(self.name_project, ignore_errors=True)
+
+    def test_configure_docker_registry(self):
+        _configure_docker_registry(
+            'test_service', 'registry.tola.io', 'toladata')
+        with open('.drone.yml', 'r') as file_tpl:
+            content = file_tpl.read()
+            self.assertIn("""\
+  build-docker-image-tag:
+    image: plugins/docker
+    insecure: true
+    registry: registry.tola.io
+    repo: registry.tola.io/toladata/test_service
+    file: Dockerfile
+    auto_tag: true
+    secrets: [DOCKER_USERNAME, DOCKER_PASSWORD]
+    when:
+      event: [tag]
+      status: [success]""", content)
