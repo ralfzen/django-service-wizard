@@ -15,7 +15,7 @@ project will be created for Python version 3
 Just run the command:
 
 ```bash
-docker-compose -f docker-compose.yml run --rm django_service_wizard
+docker-compose run --rm django_service_wizard
 ```
 
 ## Development
@@ -23,11 +23,11 @@ docker-compose -f docker-compose.yml run --rm django_service_wizard
 Build the docker image:
 
 ```bash
-docker-compose -f docker-compose.yml build
+docker-compose build
 ```
 
 Run the tests:
 
 ```bash
-docker-compose -f docker-compose.yml run --entrypoint 'py.test service_builder/tests' --rm django_service_wizard
+docker-compose run --entrypoint 'py.test service_builder/tests' --rm django_service_wizard
 ```
