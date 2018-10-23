@@ -128,7 +128,7 @@ def _create_app(name_project: str, name_app: str):
 def _configure_docker(name_project: str):
     filenames = (
         os.path.join('docker', 'Dockerfile'),
-        os.path.join('docker', 'docker-compose-dev.yml'),
+        os.path.join('docker', 'docker-compose.yml'),
         os.path.join('docker', 'docker-entrypoint.sh'),
         os.path.join('docker', 'run-standalone-dev.sh'),
         os.path.join('utils', 'tcp-port-wait.sh'),
