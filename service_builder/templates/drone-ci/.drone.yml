@@ -12,13 +12,8 @@ pipeline:
   test:
     image: python:3.7
     commands:
-      - pip install -r requirements/ci.txt
-      - cat .flake8
-      - flake8 .
       - bash tcp-port-wait.sh $${DATABASE_HOST} $${DATABASE_PORT}
-      - coverage run --source='.' manage.py test -v 2
-      - coverage report -m
-      - python manage.py makemigrations --check --dry-run
+      - bash run-tests.sh --ci
     environment:
       - DATABASE_ENGINE=postgresql
       - DATABASE_NAME=db
