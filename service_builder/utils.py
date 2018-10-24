@@ -79,6 +79,10 @@ def add_after_variable(filename: str, var: str, text_to_add: str):
 
 
 def append_to_file(filename: str, text_to_append: str, recreate: bool = False):
+    path = os.path.dirname(filename)
+    if path and not os.path.isdir(path):
+        os.mkdir(path)
+
     if recreate and os.path.exists(filename):
         os.remove(filename)
 

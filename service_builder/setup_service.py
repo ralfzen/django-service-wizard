@@ -126,21 +126,27 @@ def _create_app(name_project: str, name_app: str):
 
 
 def _configure_docker(name_project: str):
-    filenames = (
-        os.path.join('docker', 'Dockerfile'),
-        os.path.join('docker', 'docker-compose-dev.yml'),
-        os.path.join('docker', 'docker-entrypoint.sh'),
-        os.path.join('docker', 'run-standalone-dev.sh'),
-        os.path.join('utils', 'tcp-port-wait.sh'),
+    src_dest_list = (
+        (os.path.join('docker', 'Dockerfile'), '.'),
+        (os.path.join('docker', 'docker-compose.yml'), '.'),
+        (os.path.join('docker', 'docker-entrypoint.sh'), '.'),
+        (os.path.join('scripts', 'run-standalone-dev.sh'), 'scripts'),
+        (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
+        (os.path.join('scripts', 'tcp-port-wait.sh'), 'scripts'),
     )
-    for filename in filenames:
-        content = get_template_content(filename)
+    for (src, dest) in src_dest_list:
+        if dest != '.' and not os.path.isdir(dest):
+            os.mkdir(dest)
+        content = get_template_content(src)
         content = content.replace('{{ name_project }}', name_project)
-        append_to_file(os.path.basename(filename), content, recreate=True)
+        append_to_file(
+            os.path.join(dest, os.path.basename(src)),
+            content, recreate=True)
 
     # Add README info
     file_readme = 'README.md'
     content = get_template_content(os.path.join('readme', 'docker.md'))
+    content = content.replace('{{ name_project }}', name_project)
     append_to_file(file_readme, content)
 
     PrettyPrint.msg_blue('Docker support was successfully added')
@@ -150,23 +156,27 @@ def _configure_drone_ci():
     files_to_copy = [
         {
             'source': os.path.join('requirements', 'ci.txt'),
-            'destination': os.path.join('requirements', 'ci.txt')
+            'destination': os.path.join('requirements', 'ci.txt'),
         },
         {
             'source': os.path.join('drone-ci', '.flake8'),
-            'destination': os.path.join('.flake8')
+            'destination': '.flake8',
         },
         {
             'source': os.path.join('drone-ci', '.coveragerc'),
-            'destination': os.path.join('.coveragerc')
+            'destination': '.coveragerc',
         },
         {
             'source': os.path.join('drone-ci', '.drone.yml'),
-            'destination': os.path.join('.drone.yml')
+            'destination': '.drone.yml',
         },
         {
-            'source': os.path.join('utils', 'tcp-port-wait.sh'),
-            'destination': os.path.join('tcp-port-wait.sh')
+            'source': os.path.join('scripts', 'run-tests.sh'),
+            'destination': os.path.join('scripts', 'run-tests.sh'),
+        },
+        {
+            'source': os.path.join('scripts', 'tcp-port-wait.sh'),
+            'destination': os.path.join('scripts', 'tcp-port-wait.sh'),
         },
     ]
 

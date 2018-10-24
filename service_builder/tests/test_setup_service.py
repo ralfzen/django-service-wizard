@@ -151,11 +151,14 @@ class SetupDockerTest(TestCase):
 
         filename_content_list = (
             ('Dockerfile', 'ENTRYPOINT'),
-            ('docker-compose-dev.yml', 'container_name'),
+            ('docker-compose.yml', 'container_name'),
             ('docker-entrypoint.sh',
              'gunicorn -b 0.0.0.0:80 {}.wsgi'.format(self.name_project)),
-            ('run-standalone-dev.sh', 'gunicorn -b 0.0.0.0:8080 --reload'),
-            ('tcp-port-wait.sh', 'tcp-port-wait')
+            (os.path.join('scripts', 'run-standalone-dev.sh'),
+             'gunicorn -b 0.0.0.0:8080 --reload'),
+            (os.path.join('scripts', 'run-tests.sh'),
+             'python manage.py makemigrations --check --dry-run'),
+            (os.path.join('scripts', 'tcp-port-wait.sh'), 'tcp-port-wait')
         )
         for filename, content_expected in filename_content_list:
             with open(filename, 'r') as file_tpl:
