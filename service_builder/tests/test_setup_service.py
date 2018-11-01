@@ -168,6 +168,8 @@ class SetupDockerTest(TestCase):
             ('docker-entrypoint-dev.sh',
              'gunicorn {}.wsgi --config {}/gunicorn_conf.py --reload'.format(
                  self.name_project, self.name_project)),
+            (os.path.join('scripts', 'run-collectstatic.sh'),
+             'python manage.py collectstatic --no-input'),
             (os.path.join('scripts', 'run-tests.sh'),
              'python manage.py makemigrations --check --dry-run'),
             (os.path.join('scripts', 'tcp-port-wait.sh'), 'tcp-port-wait')

@@ -72,6 +72,12 @@ def _configure_project(name_project: str):
     content = get_template_content(os.path.join('settings', 'production.tpl'))
     append_to_file(file_settings_production, content)
 
+    replace_text(
+        file_settings,
+        "STATIC_URL = '/static/'",
+        "STATIC_URL = os.getenv('STATIC_URL', '/static/')"
+    )
+
     # Configure databases
     replace_text(
         file_settings,
@@ -136,6 +142,7 @@ def _configure_docker(name_project: str):
         (os.path.join('docker', 'docker-compose.yml'), '.'),
         (os.path.join('docker', 'docker-entrypoint.sh'), '.'),
         (os.path.join('docker', 'docker-entrypoint-dev.sh'), '.'),
+        (os.path.join('scripts', 'run-collectstatic.sh'), 'scripts'),
         (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
         (os.path.join('scripts', 'tcp-port-wait.sh'), 'scripts'),
     )

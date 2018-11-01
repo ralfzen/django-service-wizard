@@ -1,4 +1,6 @@
 
+STATIC_ROOT = '/static/'
+
 
 # Rest Framework
 

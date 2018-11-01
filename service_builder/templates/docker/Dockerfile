@@ -8,4 +8,6 @@ RUN pip install -r requirements/production.txt
 
 ADD . /code
 
+RUN bash scripts/run-collectstatic.sh
+
 ENTRYPOINT ["bash", "/code/docker-entrypoint.sh"]
