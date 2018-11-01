@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # It is responsability of the deployment orchestration to execute before
-# migrations, collect static files, create default admin user, etc.
+# migrations, create default admin user, populate minimal data, etc.
 
-gunicorn -b 0.0.0.0:80 {{ name_project }}.wsgi
+gunicorn {{ name_project }}.wsgi --config {{ name_project }}/gunicorn_conf.py

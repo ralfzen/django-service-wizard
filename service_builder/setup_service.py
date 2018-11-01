@@ -89,7 +89,12 @@ def _configure_project(name_project: str):
         'PORT': os.environ['DATABASE_PORT'],\
         """)
 
-    # Modify wsgi.py
+    # Modify wsgi.py and add Gunicorn conf
+    file_gunicorn = os.path.join(name_project, name_project,
+                                 'gunicorn_conf.py')
+    content = get_template_content(os.path.join('conf', 'gunicorn_conf.py'))
+    append_to_file(file_gunicorn, content)
+
     file_wsgi = os.path.join(name_project, name_project, 'wsgi.py')
     replace_text(file_wsgi,
                  '{}.settings'.format(name_project),
@@ -130,7 +135,7 @@ def _configure_docker(name_project: str):
         (os.path.join('docker', 'Dockerfile'), '.'),
         (os.path.join('docker', 'docker-compose.yml'), '.'),
         (os.path.join('docker', 'docker-entrypoint.sh'), '.'),
-        (os.path.join('scripts', 'run-standalone-dev.sh'), 'scripts'),
+        (os.path.join('docker', 'docker-entrypoint-dev.sh'), '.'),
         (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
         (os.path.join('scripts', 'tcp-port-wait.sh'), 'scripts'),
     )

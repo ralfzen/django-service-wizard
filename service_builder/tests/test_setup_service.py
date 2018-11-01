@@ -52,7 +52,7 @@ class SetupTest(TestCase):
 *.pyc
 """)
 
-        # wsgi.py
+        # wsgi.py and gunicorn_conf.py
         file_wsgi = os.path.join(self.name_project, self.name_project,
                                  'wsgi.py')
         with open(file_wsgi, 'r') as file_tpl:
@@ -60,6 +60,16 @@ class SetupTest(TestCase):
             self.assertIn(
                 '{}.settings.production'.format(self.name_project),
                 content)
+
+        file_gunicorn = os.path.join(self.name_project, self.name_project,
+                                     'gunicorn_conf.py')
+        with open(file_gunicorn, 'r') as file_tpl:
+            content = file_tpl.read()
+            self.assertEqual(content, """\
+bind = '0.0.0.0:8080'
+limit_request_field_size = 0
+limit_request_line = 0
+""")
 
         # Requirements
         file_base = os.path.join(self.name_project, 'requirements', 'base.txt')
@@ -153,9 +163,11 @@ class SetupDockerTest(TestCase):
             ('Dockerfile', 'ENTRYPOINT'),
             ('docker-compose.yml', 'container_name'),
             ('docker-entrypoint.sh',
-             'gunicorn -b 0.0.0.0:80 {}.wsgi'.format(self.name_project)),
-            (os.path.join('scripts', 'run-standalone-dev.sh'),
-             'gunicorn -b 0.0.0.0:8080 --reload'),
+             'gunicorn {}.wsgi --config {}/gunicorn_conf.py'.format(
+                 self.name_project, self.name_project)),
+            ('docker-entrypoint-dev.sh',
+             'gunicorn {}.wsgi --config {}/gunicorn_conf.py --reload'.format(
+                 self.name_project, self.name_project)),
             (os.path.join('scripts', 'run-tests.sh'),
              'python manage.py makemigrations --check --dry-run'),
             (os.path.join('scripts', 'tcp-port-wait.sh'), 'tcp-port-wait')
