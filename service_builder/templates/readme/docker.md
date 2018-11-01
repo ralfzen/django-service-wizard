@@ -17,8 +17,21 @@ Open your browser with URL `http://localhost:8080`.
 For the admin panel `http://localhost:8080/admin`
 (user: `admin`, password: `admin`).
 
-Run the tests:
+Run the tests only once:
 
 ```bash
-docker-compose run --entrypoint '/usr/bin/env' --rm {{ name_project }} bash scripts/run-tests.sh
+docker-compose run --rm --entrypoint 'bash scripts/run-tests.sh' {{ name_project }}
+```
+
+Run the tests and leave bash open inside the container, so it's possible to
+re-run the tests faster again using `bash scripts/run-tests.sh [--keepdb]`:
+
+```bash
+docker-compose run --rm --entrypoint 'bash scripts/run-tests.sh --bash-on-finish' {{ name_project }}
+```
+
+To run bash:
+
+```bash
+docker-compose run --rm --entrypoint 'bash' {{ name_project }}
 ```
