@@ -12,8 +12,8 @@ pipeline:
   test:
     image: python:3.7
     commands:
-      - bash tcp-port-wait.sh $${DATABASE_HOST} $${DATABASE_PORT}
-      - bash run-tests.sh --ci
+      - bash scripts/tcp-port-wait.sh $${DATABASE_HOST} $${DATABASE_PORT}
+      - bash scripts/run-tests.sh --ci
     environment:
       - DATABASE_ENGINE=postgresql
       - DATABASE_NAME=db
