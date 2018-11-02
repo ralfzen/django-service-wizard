@@ -66,7 +66,7 @@ class SetupTest(TestCase):
         with open(file_gunicorn, 'r') as file_tpl:
             content = file_tpl.read()
             self.assertEqual(content, """\
-bind = '0.0.0.0:8080'
+bind = '0.0.0.0:80'
 limit_request_field_size = 0
 limit_request_line = 0
 """)
