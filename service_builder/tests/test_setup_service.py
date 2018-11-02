@@ -102,6 +102,18 @@ gunicorn==19.9.0
             'Great! Now you can find your new project inside the current\'s '
             'wizard folder with name "{}"'.format(self.name_project))
 
+        file_urls = os.path.join(self.name_project, self.name_project,
+                                 'urls.py')
+        with open(file_urls, 'r') as fp:
+            content = fp.read()
+        self.assertIn('from django.urls import path, include', content)
+        self.assertIn("""\
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('health_check/', include('health_check.urls')),
+]
+""", content)
+
     @patch('service_builder.setup_service._configure_docker')
     @patch('service_builder.setup_service.yes_or_no')
     @patch('service_builder.setup_service.get_input')
