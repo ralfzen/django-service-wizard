@@ -1,5 +1,5 @@
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = os.getenv('STATIC_ROOT', 'static/')
 
 
 # Rest Framework

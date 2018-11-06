@@ -1,9 +1,30 @@
+
   build-docker-image-tag:
     image: plugins/docker
     insecure: true
     registry: {{ registry_domain }}
     repo: {{ registry_url }}
     file: Dockerfile
+    auto_tag: true
+    secrets: [DOCKER_USERNAME, DOCKER_PASSWORD]
+    when:
+      event: [tag]
+      status: [success]
+
+  prebuild-docker-static-image:
+    image: python:3.6
+    commands:
+      - bash scripts/run-collectstatic.sh --install-deps
+    when:
+      event: [tag]
+      status: [success]
+
+  build-docker-static-image-tag:
+    image: plugins/docker
+    insecure: true
+    registry: {{ registry_domain }}
+    repo: {{ registry_url }}_static
+    dockerfile: Dockerfile.nginx
     auto_tag: true
     secrets: [DOCKER_USERNAME, DOCKER_PASSWORD]
     when:

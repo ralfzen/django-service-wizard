@@ -173,6 +173,7 @@ class SetupDockerTest(TestCase):
 
         filename_content_list = (
             ('Dockerfile', 'ENTRYPOINT'),
+            ('Dockerfile.nginx', 'COPY ./static /usr/share/nginx/html/static'),
             ('docker-compose.yml', 'container_name'),
             ('docker-entrypoint.sh',
              'gunicorn {}.wsgi --config {}/gunicorn_conf.py'.format(

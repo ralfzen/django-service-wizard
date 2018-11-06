@@ -9,7 +9,7 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
-    image: postgres:10.4
+    image: postgres:10.4-alpine
     environment:
       POSTGRES_DB: {{ name_project }}
       POSTGRES_USER: root
@@ -49,10 +49,11 @@ services:
         MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALFc9NFZaOaSwUMPNektbtJqEjYZ6IRB
         qhqvJu1hKPYn9HYd75c0gIDYHJ9lb7QwQvg44aO27104rDK0xSstzL0CAwEAAQ==
         -----END PUBLIC KEY-----
+      STATIC_ROOT: /static/
       STATIC_URL: http://localhost:8000/
 
   nginx_{{ name_project }}:
-    image: nginx:latest
+    image: nginx:stable-alpine
     container_name: nginx_{{ name_project }}
     ports:
       - "8000:80"
