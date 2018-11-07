@@ -112,15 +112,20 @@ def _configure_project(name_project: str):
                  '{}.settings'.format(name_project),
                  '{}.settings.base'.format(name_project))
 
-    # Add health check to urls.py
+    # Modify urls.py
     urls_py = os.path.join(name_project, name_project, 'urls.py')
+    replace_text(urls_py, 'from django.contrib import admin', """\
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin""")
     replace_text(urls_py,
                  'from django.urls import path',
                  'from django.urls import path, include')
     replace_text(urls_py,
-                 "path('admin/', admin.site.urls),",
-                 """path('admin/', admin.site.urls),
-    path('health_check/', include('health_check.urls')),""")
+                 ']',
+                 """\
+    path('health_check/', include('health_check.urls')),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)""")
 
     # Add README
     file_readme = os.path.join(name_project, 'README.md')

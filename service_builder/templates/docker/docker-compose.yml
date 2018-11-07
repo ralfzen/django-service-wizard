@@ -29,7 +29,6 @@ services:
     image: {{ name_project }}
     volumes:
       - .:/code
-      - static-content:/static
     ports:
       - "8080:80"
     depends_on:
@@ -50,18 +49,3 @@ services:
         qhqvJu1hKPYn9HYd75c0gIDYHJ9lb7QwQvg44aO27104rDK0xSstzL0CAwEAAQ==
         -----END PUBLIC KEY-----
       STATIC_ROOT: /static/
-      STATIC_URL: http://localhost:8000/
-
-  nginx_{{ name_project }}:
-    image: nginx:stable-alpine
-    container_name: nginx_{{ name_project }}
-    ports:
-      - "8000:80"
-    volumes:
-      - static-content:/usr/share/nginx/html/
-    depends_on:
-      - {{ name_project }}
-    command: [nginx, '-g', 'daemon off;']
-
-volumes:
-  static-content:
