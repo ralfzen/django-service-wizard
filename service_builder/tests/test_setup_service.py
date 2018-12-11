@@ -6,7 +6,7 @@ from unittest.mock import patch
 from django.core.management.base import CommandError
 
 from ..setup_service import (
-    setup, _configure_docker, _configure_docker_registry)
+    setup, _configure_docker, _configure_drone_ci, _configure_docker_registry)
 
 
 class SetupTest(TestCase):
@@ -196,6 +196,33 @@ class SetupDockerTest(TestCase):
                 content = file_tpl.read()
                 self.assertIn(content_expected, content)
                 self.assertNotIn('{{ name_project }}', content)
+
+
+class SetupDroneTest(TestCase):
+    def setUp(self):
+        self.main_dir = os.getcwd()
+        self.name_project = 'test_service'
+        shutil.rmtree(self.name_project, ignore_errors=True)
+
+    def tearDown(self):
+        os.chdir(self.main_dir)
+        shutil.rmtree(self.name_project, ignore_errors=True)
+
+    def test_configure_drone(self):
+        os.mkdir(self.name_project)
+        os.chdir(self.name_project)
+        _configure_drone_ci()
+
+        for filename in ('.drone.yml', '.flake8', '.coveragerc',
+                         os.path.join('scripts', 'run-tests.sh'),
+                         os.path.join('requirements', 'ci.txt')):
+            with open(filename, 'r') as file_tpl:
+                content = file_tpl.read()
+                path = os.path.join('..', 'service_builder', 'tests',
+                                    'expected', filename)
+                with open(path, 'r') as expected_tpl:
+                    content_expected = expected_tpl.read()
+                    self.assertEqual(content, content_expected)
 
 
 class SetupDockerRegistryTest(TestCase):
