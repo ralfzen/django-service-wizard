@@ -162,7 +162,7 @@ def _configure_docker(name_project: str):
         (os.path.join('docker', 'docker-entrypoint-dev.sh'), '.'),
         (os.path.join('scripts', 'run-collectstatic.sh'), 'scripts'),
         (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
-        (os.path.join('scripts', 'tcp-port-wait.sh'), 'scripts'),
+        (os.path.join('scripts', 'wait-for-it.sh'), 'scripts'),
     )
     for (src, dest) in src_dest_list:
         if dest != '.' and not os.path.isdir(dest):
@@ -205,8 +205,8 @@ def _configure_drone_ci():
             'destination': os.path.join('scripts', 'run-tests.sh'),
         },
         {
-            'source': os.path.join('scripts', 'tcp-port-wait.sh'),
-            'destination': os.path.join('scripts', 'tcp-port-wait.sh'),
+            'source': os.path.join('scripts', 'wait-for-it.sh'),
+            'destination': os.path.join('scripts', 'wait-for-it.sh'),
         },
     ]
 

@@ -190,7 +190,7 @@ class SetupDockerTest(TestCase):
              'python manage.py collectstatic --no-input'),
             (os.path.join('scripts', 'run-tests.sh'),
              'python manage.py makemigrations --check --dry-run'),
-            (os.path.join('scripts', 'tcp-port-wait.sh'), 'tcp-port-wait')
+            (os.path.join('scripts', 'wait-for-it.sh'), 'wait-for-it')
         )
         for filename, content_expected in filename_content_list:
             with open(filename, 'r') as file_tpl:
