@@ -115,9 +115,8 @@ def _configure_project(name_project: str):
     # Modify urls.py
     urls_py = os.path.join(name_project, name_project, 'urls.py')
     replace_text(urls_py, 'from django.contrib import admin', """\
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin""")
+from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns""")
     replace_text(urls_py,
                  'from django.urls import path',
                  'from django.urls import path, include')
@@ -125,7 +124,10 @@ from django.contrib import admin""")
                  ']',
                  """\
     path('health_check/', include('health_check.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)""")
+]
+
+urlpatterns += staticfiles_urlpatterns()
+""")
 
     # Add README
     file_readme = os.path.join(name_project, 'README.md')
