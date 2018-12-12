@@ -3,10 +3,7 @@
 
 set -e
 
-echo $(date -u) "- Collecting static files"
-python manage.py collectstatic --no-input
-
-bash scripts/tcp-port-wait.sh $DATABASE_HOST $DATABASE_PORT
+bash scripts/wait-for-it.sh $DATABASE_HOST:$DATABASE_PORT
 
 echo $(date -u) "- Migrating"
 python manage.py migrate

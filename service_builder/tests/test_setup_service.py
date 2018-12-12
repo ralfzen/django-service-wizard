@@ -107,15 +107,16 @@ gunicorn==19.9.0
         with open(file_urls, 'r') as fp:
             content = fp.read()
         self.assertIn("""\
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('health_check/', include('health_check.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
+
+urlpatterns += staticfiles_urlpatterns()
 """, content)
 
     @patch('service_builder.setup_service._configure_docker')
@@ -189,7 +190,7 @@ class SetupDockerTest(TestCase):
              'python manage.py collectstatic --no-input'),
             (os.path.join('scripts', 'run-tests.sh'),
              'python manage.py makemigrations --check --dry-run'),
-            (os.path.join('scripts', 'tcp-port-wait.sh'), 'tcp-port-wait')
+            (os.path.join('scripts', 'wait-for-it.sh'), 'wait-for-it')
         )
         for filename, content_expected in filename_content_list:
             with open(filename, 'r') as file_tpl:

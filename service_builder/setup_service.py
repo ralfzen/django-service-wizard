@@ -115,9 +115,8 @@ def _configure_project(name_project: str):
     # Modify urls.py
     urls_py = os.path.join(name_project, name_project, 'urls.py')
     replace_text(urls_py, 'from django.contrib import admin', """\
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin""")
+from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns""")
     replace_text(urls_py,
                  'from django.urls import path',
                  'from django.urls import path, include')
@@ -125,7 +124,10 @@ from django.contrib import admin""")
                  ']',
                  """\
     path('health_check/', include('health_check.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)""")
+]
+
+urlpatterns += staticfiles_urlpatterns()
+""")
 
     # Add README
     file_readme = os.path.join(name_project, 'README.md')
@@ -160,7 +162,7 @@ def _configure_docker(name_project: str):
         (os.path.join('docker', 'docker-entrypoint-dev.sh'), '.'),
         (os.path.join('scripts', 'run-collectstatic.sh'), 'scripts'),
         (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
-        (os.path.join('scripts', 'tcp-port-wait.sh'), 'scripts'),
+        (os.path.join('scripts', 'wait-for-it.sh'), 'scripts'),
     )
     for (src, dest) in src_dest_list:
         if dest != '.' and not os.path.isdir(dest):
@@ -203,8 +205,8 @@ def _configure_drone_ci():
             'destination': os.path.join('scripts', 'run-tests.sh'),
         },
         {
-            'source': os.path.join('scripts', 'tcp-port-wait.sh'),
-            'destination': os.path.join('scripts', 'tcp-port-wait.sh'),
+            'source': os.path.join('scripts', 'wait-for-it.sh'),
+            'destination': os.path.join('scripts', 'wait-for-it.sh'),
         },
     ]
 
