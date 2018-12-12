@@ -1,4 +1,0 @@
-This is a test
-file
-where <THIS> stuff needs to be replaced
-finish.

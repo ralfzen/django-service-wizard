@@ -29,5 +29,5 @@ docker-compose build
 Run the tests:
 
 ```bash
-docker-compose run --entrypoint 'py.test service_builder/tests' --rm django_service_wizard
+docker-compose run --entrypoint 'python -m unittest discover' --rm django_service_wizard
 ```
