@@ -185,12 +185,15 @@ def _configure_docker(name_project: str):
 
 def _configure_drone_ci():
     files_to_copy = [
-        [os.path.join('requirements', 'ci.txt'), os.path.join('requirements', 'ci.txt'), 0o644],
+        [os.path.join('requirements', 'ci.txt'),
+         os.path.join('requirements', 'ci.txt'), 0o644],
         [os.path.join('drone-ci', '.flake8'), '.flake8', 0o644],
         [os.path.join('drone-ci', '.coveragerc'), '.coveragerc', 0o644],
         [os.path.join('drone-ci', '.drone.yml'), '.drone.yml', 0o644],
-        [os.path.join('scripts', 'run-tests.sh'), os.path.join('scripts', 'run-tests.sh'), 0o755],
-        [os.path.join('scripts', 'wait-for-it.sh'), os.path.join('scripts', 'wait-for-it.sh'), 0o775],
+        [os.path.join('scripts', 'run-tests.sh'),
+         os.path.join('scripts', 'run-tests.sh'), 0o755],
+        [os.path.join('scripts', 'wait-for-it.sh'),
+         os.path.join('scripts', 'wait-for-it.sh'), 0o775],
     ]
 
     for source, destination, permission in files_to_copy:
@@ -213,7 +216,8 @@ def _configure_docker_registry(name_project: str, registry_domain: str,
     content = get_template_content(filename)
     content = content.replace('{{ registry_domain }}', registry_domain)
     content = content.replace('{{ registry_url }}', registry_url)
-    append_to_file(filename='.drone.yml', text_to_append=content, permission=0o644)
+    append_to_file(filename='.drone.yml', text_to_append=content,
+                   permission=0o644)
 
 
 def setup():
