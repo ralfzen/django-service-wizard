@@ -8,9 +8,10 @@ services:
 
 pipeline:
   test:
-    image: python:3.6
+    image: python:3.6-alpine3.7
     commands:
-      - bash scripts/wait-for-it.sh $${DATABASE_HOST}:$${DATABASE_PORT}
+      - pip install -r requirements/ci.txt --no-cache-dir
+      - bash scripts/wait-for-it.sh $${DATABASE_HOST} $${DATABASE_PORT}
       - bash scripts/run-tests.sh --ci
     environment:
       - DATABASE_ENGINE=postgresql
