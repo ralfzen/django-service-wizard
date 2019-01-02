@@ -12,7 +12,7 @@
       status: [success]
 
   prebuild-docker-static-image:
-    image: python:3.6
+    image: python:3.6-alpine3.7
     commands:
       - bash scripts/run-collectstatic.sh
     when:

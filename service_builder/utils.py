@@ -78,7 +78,8 @@ def add_after_variable(filename: str, var: str, text_to_add: str):
             print(line, end='')
 
 
-def append_to_file(filename: str, text_to_append: str, recreate: bool = False):
+def append_to_file(filename: str, text_to_append: str, recreate: bool = False,
+                   permission: int = 0o644):
     path = os.path.dirname(filename)
     if path and not os.path.isdir(path):
         os.mkdir(path)
@@ -88,6 +89,7 @@ def append_to_file(filename: str, text_to_append: str, recreate: bool = False):
 
     with open(filename, 'a') as fp:
         fp.write(text_to_append)
+    os.chmod(filename, permission)
 
 
 def get_template_content(filename: str) -> str:

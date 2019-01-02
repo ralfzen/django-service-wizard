@@ -28,12 +28,12 @@ services:
     volumes:
       - .:/code
     ports:
-      - "8080:80"
+      - "8080:8080"
     depends_on:
       - postgres_{{ name_project }}
     environment:
-      ALLOWED_HOSTS: localhost,127.0.0.1
-      CORS_ORIGIN_WHITELIST: localhost,127.0.0.1
+      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0
+      CORS_ORIGIN_WHITELIST: localhost,127.0.0.1,0.0.0.0
       DATABASE_ENGINE: "postgresql"
       DATABASE_NAME: "{{ name_project }}"
       DATABASE_USER: "root"

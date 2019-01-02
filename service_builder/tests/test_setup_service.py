@@ -48,9 +48,9 @@ class SetupTest(TestCase):
         self.assertTrue(os.path.exists(file_gitignore))
         with open(file_gitignore, 'r') as fp:
             content = fp.read()
-        self.assertEqual(content, """\
-*.pyc
-""")
+            original = open('service_builder/templates/gitignore/.gitignore',
+                            'r').read()
+            self.assertEqual(content, original)
 
         # wsgi.py and gunicorn_conf.py
         file_wsgi = os.path.join(self.name_project, self.name_project,
@@ -66,7 +66,7 @@ class SetupTest(TestCase):
         with open(file_gunicorn, 'r') as file_tpl:
             content = file_tpl.read()
             self.assertEqual(content, """\
-bind = '0.0.0.0:80'
+bind = '0.0.0.0:8080'
 limit_request_field_size = 0
 limit_request_line = 0
 """)
@@ -190,7 +190,6 @@ class SetupDockerTest(TestCase):
              'python manage.py collectstatic --no-input'),
             (os.path.join('scripts', 'run-tests.sh'),
              'python manage.py makemigrations --check --dry-run'),
-            (os.path.join('scripts', 'wait-for-it.sh'), 'wait-for-it')
         )
         for filename, content_expected in filename_content_list:
             with open(filename, 'r') as file_tpl:

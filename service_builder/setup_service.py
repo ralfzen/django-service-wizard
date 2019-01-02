@@ -155,23 +155,24 @@ def _create_app(name_project: str, name_app: str):
 
 def _configure_docker(name_project: str):
     src_dest_list = (
-        (os.path.join('docker', 'Dockerfile'), '.'),
-        (os.path.join('docker', 'Dockerfile.nginx'), '.'),
-        (os.path.join('docker', 'docker-compose.yml'), '.'),
-        (os.path.join('docker', 'docker-entrypoint.sh'), '.'),
-        (os.path.join('docker', 'docker-entrypoint-dev.sh'), '.'),
-        (os.path.join('scripts', 'run-collectstatic.sh'), 'scripts'),
-        (os.path.join('scripts', 'run-tests.sh'), 'scripts'),
-        (os.path.join('scripts', 'wait-for-it.sh'), 'scripts'),
+        [os.path.join('docker', 'Dockerfile'), '.', 0o644],
+        [os.path.join('docker', 'Dockerfile.nginx'), '.', 0o644],
+        [os.path.join('docker', 'docker-compose.yml'), '.', 0o644],
+        [os.path.join('docker', '.dockerignore'), '.', 0o644],
+        [os.path.join('docker', 'docker-entrypoint.sh'), '.', 0o755],
+        [os.path.join('docker', 'docker-entrypoint-dev.sh'), '.', 0o755],
+        [os.path.join('scripts', 'run-collectstatic.sh'), 'scripts', 0o755],
+        [os.path.join('scripts', 'run-tests.sh'), 'scripts', 0o755],
+        [os.path.join('scripts', 'wait-for-it.sh'), 'scripts', 0o755],
     )
-    for (src, dest) in src_dest_list:
+    for (src, dest, perm) in src_dest_list:
         if dest != '.' and not os.path.isdir(dest):
             os.mkdir(dest)
         content = get_template_content(src)
         content = content.replace('{{ name_project }}', name_project)
         append_to_file(
             os.path.join(dest, os.path.basename(src)),
-            content, recreate=True)
+            content, recreate=True, permission=perm)
 
     # Add README info
     file_readme = 'README.md'
@@ -184,37 +185,23 @@ def _configure_docker(name_project: str):
 
 def _configure_drone_ci():
     files_to_copy = [
-        {
-            'source': os.path.join('requirements', 'ci.txt'),
-            'destination': os.path.join('requirements', 'ci.txt'),
-        },
-        {
-            'source': os.path.join('drone-ci', '.flake8'),
-            'destination': '.flake8',
-        },
-        {
-            'source': os.path.join('drone-ci', '.coveragerc'),
-            'destination': '.coveragerc',
-        },
-        {
-            'source': os.path.join('drone-ci', '.drone.yml'),
-            'destination': '.drone.yml',
-        },
-        {
-            'source': os.path.join('scripts', 'run-tests.sh'),
-            'destination': os.path.join('scripts', 'run-tests.sh'),
-        },
-        {
-            'source': os.path.join('scripts', 'wait-for-it.sh'),
-            'destination': os.path.join('scripts', 'wait-for-it.sh'),
-        },
+        [os.path.join('requirements', 'ci.txt'),
+         os.path.join('requirements', 'ci.txt'), 0o644],
+        [os.path.join('drone-ci', '.flake8'), '.flake8', 0o644],
+        [os.path.join('drone-ci', '.coveragerc'), '.coveragerc', 0o644],
+        [os.path.join('drone-ci', '.drone.yml'), '.drone.yml', 0o644],
+        [os.path.join('scripts', 'run-tests.sh'),
+         os.path.join('scripts', 'run-tests.sh'), 0o755],
+        [os.path.join('scripts', 'wait-for-it.sh'),
+         os.path.join('scripts', 'wait-for-it.sh'), 0o775],
     ]
 
-    for file in files_to_copy:
+    for source, destination, permission in files_to_copy:
         append_to_file(
-            filename=file['destination'],
-            text_to_append=get_template_content(file['source']),
+            filename=destination,
+            text_to_append=get_template_content(source),
             recreate=True,
+            permission=permission
         )
 
     PrettyPrint.msg_blue('Drone CI support was successfully added. Make sure '
@@ -229,7 +216,8 @@ def _configure_docker_registry(name_project: str, registry_domain: str,
     content = get_template_content(filename)
     content = content.replace('{{ registry_domain }}', registry_domain)
     content = content.replace('{{ registry_url }}', registry_url)
-    append_to_file(filename='.drone.yml', text_to_append=content)
+    append_to_file(filename='.drone.yml', text_to_append=content,
+                   permission=0o644)
 
 
 def setup():

@@ -12,10 +12,11 @@ project will be created for Python version 3
 
 ## Set up a new MicroService
 
-Just run the command:
+Just run the commands:
 
 ```bash
-docker-compose run --rm django_service_wizard
+$ docker build . -t django_service_wizard
+$ docker run -it -u $(id -u):$(id -g) -v "$(pwd)":/code django_service_wizard
 ```
 
 ## Development
