@@ -80,7 +80,7 @@ limit_request_line = 0
 Django==2.1.3
 django-filter==2.0.0
 django-health-check==3.6.1
-git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.4.0#egg=django-oauth-toolkit-jwt
+git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.5.2#egg=django-oauth-toolkit-jwt
 djangorestframework==3.8.2
 psycopg2-binary==2.7.5
 """)
