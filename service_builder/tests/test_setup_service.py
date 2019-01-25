@@ -77,12 +77,12 @@ limit_request_line = 0
         with open(file_base, 'r') as fp:
             content = fp.read()
         self.assertEqual(content, """\
-Django==2.1.3
-django-filter==2.0.0
-django-health-check==3.6.1
+Django==2.1.5
+django-filter==2.1.0
+django-health-check==3.8.0
 git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.5.2#egg=django-oauth-toolkit-jwt
-djangorestframework==3.8.2
-psycopg2-binary==2.7.5
+djangorestframework==3.9.1
+psycopg2-binary==2.7.7
 """)
         file_production = os.path.join(self.name_project, 'requirements',
                                        'production.txt')

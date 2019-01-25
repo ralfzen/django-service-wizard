@@ -15,4 +15,7 @@ class RequirementsTest(TestCase):
             content = file_output.read()
             res = re.split(r'Django==(.+)\n', content)
             django_version = res[1]
-            self.assertEqual(django_version, django_version_expected)
+            self.assertEqual(django_version, django_version_expected,
+                             'The Django version running for this test does '
+                             'not match the version found on the '
+                             'service_builder requirements.')
