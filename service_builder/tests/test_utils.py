@@ -23,6 +23,24 @@ class ReplaceTextTest(TestCase):
             lines, ['first\n', 'DEBUG = False  # comment\n', 'Third\n'])
 
 
+class SetVariableValueTest(TestCase):
+    def setUp(self):
+        self.fp = tempfile.NamedTemporaryFile(delete=False)
+        self.fp.writelines(
+            [b'first\n', b"VAR = 'VALUE'  # comment\n", b'Third\n'])
+        self.fp.seek(0)
+
+    def tearDown(self):
+        self.fp.close()
+
+    def test_set_variable_value(self):
+        utils.set_variable_value(self.fp.name, 'VAR', "'OTHERVALUE'")
+        with open(self.fp.name, 'r') as file_output:
+            lines = file_output.readlines()
+        self.assertEqual(
+            lines, ['first\n', "VAR = 'OTHERVALUE'\n", 'Third\n'])
+
+
 class AddAfterVariableTest(TestCase):
     def _write_file(self, lines: list):
         fp = tempfile.NamedTemporaryFile(delete=False)
