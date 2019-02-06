@@ -43,6 +43,14 @@ class SetupTest(TestCase):
                 os.path.join(self.name_project, self.name_application)
             ))
 
+        # settings.base
+        file_settings = os.path.join(self.name_project, self.name_project,
+                                     'settings', 'base.py')
+        self.assertTrue(os.path.exists(file_settings))
+        with open(file_settings, 'r') as file_tpl:
+            content = file_tpl.read()
+            self.assertIn("SECRET_KEY = os.environ['SECRET_KEY']", content)
+
         # Gitignore
         file_gitignore = os.path.join(self.name_project, '.gitignore')
         self.assertTrue(os.path.exists(file_gitignore))

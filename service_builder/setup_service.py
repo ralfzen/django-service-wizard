@@ -4,7 +4,8 @@ from django.core import management
 from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
-                    append_to_file, get_template_content, get_input, yes_or_no)
+                    append_to_file, get_template_content, get_input, yes_or_no,
+                    set_variable_value)
 
 
 def _welcome_msg():
@@ -56,6 +57,7 @@ def _configure_project(name_project: str):
     open(file_settings_production, 'a').close()
 
     # Configure settings
+    set_variable_value(file_settings, 'SECRET_KEY', "os.environ['SECRET_KEY']")
     replace_text(file_settings,
                  'DEBUG = True',
                  "DEBUG = False if os.getenv('DEBUG') == 'False' else True")

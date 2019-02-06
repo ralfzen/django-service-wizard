@@ -1,5 +1,6 @@
 import fileinput
 import os
+import re
 
 
 class PrettyPrint:
@@ -44,6 +45,19 @@ def replace_text(filename: str, text_to_search: str, replacement_text: str):
     with fileinput.FileInput(filename, inplace=True) as file:
         for line in file:
             print(line.replace(text_to_search, replacement_text), end='')
+
+
+def set_variable_value(filename: str, variable_name: str, value: str):
+    """
+    It will replace current variable set with the desired value. It will work
+    only when the variable is defined without indentation (like in a settings
+    file) and if its already defined.
+    """
+    with fileinput.FileInput(filename, inplace=True) as file:
+        for line in file:
+            if re.match(f'^{variable_name} = ', line):
+                line = f"{variable_name} = {value}\n"
+            print(line, end='')
 
 
 def add_after_variable(filename: str, var: str, text_to_add: str):
