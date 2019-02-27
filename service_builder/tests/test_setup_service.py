@@ -85,7 +85,7 @@ limit_request_line = 0
         with open(file_base, 'r') as fp:
             content = fp.read()
         self.assertEqual(content, """\
-Django==2.1.5
+Django~=2.1.7
 django-filter==2.1.0
 django-health-check==3.8.0
 git+https://github.com/Humanitec/django-oauth-toolkit-jwt@v0.5.2#egg=django-oauth-toolkit-jwt

@@ -248,7 +248,7 @@ def setup():
             registry_domain = get_input(
                 'Type in the domain of the registry (e.g.: registry.tola.io):')
             registry_folder = get_input(
-                'Type the folder of the registry (e.g.: toladata):')
+                'Type the folder of the registry (e.g.: humanitec-walhall):')
             _configure_docker_registry(name_project, registry_domain,
                                        registry_folder)
 
