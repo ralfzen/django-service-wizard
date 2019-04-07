@@ -144,6 +144,54 @@ urlpatterns += staticfiles_urlpatterns()
     append_to_file(permissions, content)
 
 
+def _configure_swagger(project_name, display_project_name, project_description):
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    # Modify requirements
+    append_to_file(os.path.join(base_dir, project_name, os.path.join('requirements', 'base.txt')), "drf-yasg==1.10.2")
+    # Modify settings
+    base_py = os.path.join(base_dir, project_name, project_name, 'settings', 'base.py')
+    replace_text(base_py,
+                 "'health_check.db',", """\
+    'health_check.db',
+
+    # openapi
+    'drf_yasg',
+""")
+    # Modify urls.py
+    urls_py = os.path.join(base_dir, project_name, project_name, 'urls.py')
+    replace_text(urls_py,
+                 'from django.urls import path, include', f"""\
+from django.urls import path, include, re_path
+from rest_framework import permissions
+
+
+# openapi implementation
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+swagger_info = openapi.Info(
+        title="{display_project_name}",
+        default_version='latest',
+        description="{project_description}",
+)
+
+schema_view = get_schema_view(
+    swagger_info,
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)              
+""")
+    replace_text(urls_py,
+                 "path('health_check/', include('health_check.urls')),",
+                 """\
+    re_path(r'^docs/swagger(?P<format>\.json|\.yaml)$',
+            schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0),
+         name='schema-swagger-ui'),
+    path('health_check/', include('health_check.urls')),
+""")  # noqa
+
+
 def _create_app(name_project: str, name_app: str):
     main_dir = os.getcwd()
     os.chdir(name_project)
@@ -257,6 +305,16 @@ def setup():
                 'Type the folder of the registry (e.g.: humanitec):')
             _configure_docker_registry(name_project, registry_domain,
                                        registry_folder)
+
+    is_answer_yes_swagger_docs = yes_or_no_default('Add Swagger docs?', True)
+    if is_answer_yes_swagger_docs:
+        display_project_name = get_input(
+            'Type in the displayed Name of your service (e.g.: Appointment Service)'
+        )
+        project_description = get_input(
+            'Type in the description of your service (e.g.: A microservice for saving and retrieving appointments.)'
+        )
+        _configure_swagger(name_project, display_project_name, project_description)
 
     PrettyPrint.msg_blue(
         'Great! Now you can find your new project inside the current\'s '
