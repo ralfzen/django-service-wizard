@@ -3,11 +3,10 @@
 # django-service-wizard
 
 A Django (Micro)Service wizard for the Humanitec Platform Walhall. This will
-help you to setup your a project from scratch.
+help you to setup your project from scratch.
 
 The Django version installed is specified in `requirements/base.txt`. The
-project will be created for Python version 3
-(see `service_builder/templates/docker/Dockerfile` for more details).
+project will be created for Python version 3 (see `service_builder/templates/docker/Dockerfile` for more details).
 
 
 ## Set up a new MicroService
