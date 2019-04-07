@@ -13,7 +13,7 @@ REST_FRAMEWORK = {
         'oauth2_provider_jwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'api.permissions.AllowOptionsAuthentication',
+        '{{ name_project }}.permissions.AllowOptionsAuthentication',
     )
 }
 

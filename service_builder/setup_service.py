@@ -69,6 +69,7 @@ def _configure_project(name_project: str):
 
     content = get_template_content(os.path.join('settings',
                                                 'base_appended.tpl'))
+    content = content.replace('{{ name_project }}', name_project)
     append_to_file(file_settings, content)
 
     content = get_template_content(os.path.join('settings', 'production.tpl'))
@@ -136,6 +137,11 @@ urlpatterns += staticfiles_urlpatterns()
     content = get_template_content(os.path.join('readme', 'README.md'))
     content = content.replace('{{ name_project }}', name_project)
     append_to_file(file_readme, content)
+
+    # Add permissions
+    permissions = os.path.join(name_project, name_project, 'permissions.py')
+    content = get_template_content('permissions.py')
+    append_to_file(permissions, content)
 
 
 def _create_app(name_project: str, name_app: str):
