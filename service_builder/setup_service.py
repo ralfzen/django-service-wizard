@@ -246,9 +246,9 @@ def setup():
             'Add Docker registry support to Drone?')
         if is_answer_yes:
             registry_domain = get_input(
-                'Type in the domain of the registry (e.g.: registry.tola.io):')
+                'Type in the domain of the registry (e.g.: registry.walhall.io):')
             registry_folder = get_input(
-                'Type the folder of the registry (e.g.: humanitec-walhall):')
+                'Type the folder of the registry (e.g.: humanitec):')
             _configure_docker_registry(name_project, registry_domain,
                                        registry_folder)
 
