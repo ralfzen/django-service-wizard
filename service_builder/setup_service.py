@@ -5,7 +5,7 @@ from django.core.management.base import CommandError
 
 from .utils import (PrettyPrint, replace_text, add_after_variable,
                     append_to_file, get_template_content, get_input, yes_or_no,
-                    set_variable_value)
+                    set_variable_value, yes_or_no_default)
 
 
 def _welcome_msg():
@@ -237,7 +237,7 @@ def setup():
     if is_answer_yes_docker:
         _configure_docker(name_project)
 
-    is_answer_yes_drone = yes_or_no('Add Drone CI test support?')
+    is_answer_yes_drone = yes_or_no_default('Add Drone CI test support?', False)
     if is_answer_yes_drone:
         _configure_drone_ci()
 

@@ -41,6 +41,17 @@ def yes_or_no(question):
             print('You must answer yes or no.')
 
 
+def yes_or_no_default(question, default: bool) -> bool:
+    while True:
+        answer = input(question + f' (y/n/enter for { {True: "yes", False: "no"}[default] }): ').lower().strip()
+        if answer == '':
+            return default
+        if answer in ('y', 'yes', 'n', 'no'):
+            return answer in ('y', 'yes')
+        else:
+            print('You must answer yes or no or press enter.')
+
+
 def replace_text(filename: str, text_to_search: str, replacement_text: str):
     with fileinput.FileInput(filename, inplace=True) as file:
         for line in file:
