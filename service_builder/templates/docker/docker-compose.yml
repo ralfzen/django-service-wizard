@@ -41,6 +41,7 @@ services:
       DATABASE_HOST: "postgres_{{ name_project }}"
       DATABASE_PORT: "5432"
       DEBUG: "True"
+      SECRET_KEY: "nothing"
       JWT_PUBLIC_KEY_RSA_BIFROST: |-
         -----BEGIN PUBLIC KEY-----
         MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALFc9NFZaOaSwUMPNektbtJqEjYZ6IRB
