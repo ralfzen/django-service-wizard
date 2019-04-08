@@ -8,6 +8,10 @@ help you to setup your project from scratch.
 The Django version installed is specified in `requirements/base.txt`. The
 project will be created for Python version 3 (see `service_builder/templates/docker/Dockerfile` for more details).
 
+## Requirements
+
+- docker-compose
+
 
 ## Set up a new MicroService
 
